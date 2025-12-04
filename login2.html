@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login 2</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #030414;
+  }
+  button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(90deg,#7fff96,#00d07a);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+  }
+</style>
+</head>
+<body>
+  <button id="btnNext">🔗</button>
+
+<script>
+document.getElementById("btnNext").onclick = ()=>{
+  if(localStorage.getItem("login1") !== "true"){
+    alert("❌ Please complete Login 1 first!");
+    window.location.href = "login1.html";
+    return;
+  }
+  localStorage.setItem("login2","true"); // Login 2 clicked
+  window.location.href = "userpanel.html";
+};
+</script>
+</body>
+</html>

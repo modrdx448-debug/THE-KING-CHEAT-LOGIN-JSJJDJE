@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DIGIN — User Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  html,body{height:100%;margin:0;font-family:'Orbitron',sans-serif;background:#030414;overflow:hidden;color:#fff}
+  .wrap{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;}
+  .card{width:420px;max-width:calc(100% - 40px);background:rgba(255,255,255,0.04);border-radius:16px;padding:20px;text-align:center;
+        border:1px solid rgba(255,255,255,0.05);box-shadow:0 8px 40px rgba(0,0,0,0.6);backdrop-filter:blur(6px);}
+  h1{margin:8px 0 14px;font-size:20px}
+  .btns{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+  .big-btn{width:100%;padding:12px;border-radius:12px;border:none;font-weight:700;font-size:15px;color:#fff;cursor:pointer}
+  .youtube{background:linear-gradient(90deg,#ff4d4d,#ff1a1a)}
+  .telegram{background:linear-gradient(90deg,#6ad1ff,#1aa6ff)}
+  .insta{background:linear-gradient(90deg,#f59bff,#ffb86b)}
+  .getlink{background:linear-gradient(90deg,#7fff96,#00d07a)}
+  .disabled{opacity:0.45;cursor:not-allowed}
+
+  .progress-box{width:100%;background:rgba(255,255,255,0.1);height:12px;border-radius:20px;margin-top:18px;overflow:hidden;}
+  .progress{height:100%;width:0;background:#00d07a;transition:0.5s;}
+
+  #bgCanvas{position:fixed;left:0;top:0;width:100%;height:100%;z-index:1}
+</style>
+</head>
+<body>
+
+<script>
+  // Check if user completed Login 1 & 2
+  if(localStorage.getItem("login1") !== "true" || localStorage.getItem("login2") !== "true"){
+    alert("❌ Please complete Login 1 and Login 2 first!");
+    window.location.href = "login1.html";
+  }
+</script>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="wrap">
+  <div class="card">
+    <h1>DIGIN — User Panel</h1>
+
+    <div class="btns">
+      <button id="btnYoutube"  class="big-btn youtube">▶ YouTube</button>
+      <button id="btnTelegram" class="big-btn telegram disabled">✈ Telegram</button>
+      <button id="btnInsta"    class="big-btn insta disabled">📸 Instagram</button>
+      <button id="btnGetLink"  class="big-btn getlink disabled">🔗 Get Link</button>
+    </div>
+
+    <div class="progress-box">
+      <div id="progress" class="progress"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const btnYoutube = document.getElementById("btnYoutube");
+const btnTelegram = document.getElementById("btnTelegram");
+const btnInsta    = document.getElementById("btnInsta");
+const btnGetLink  = document.getElementById("btnGetLink");
+const progress    = document.getElementById("progress");
+
+let pr = 0;
+
+function setProgress(v){
+  pr = v;
+  progress.style.width = v + "%";
+
+  if(v >= 75){
+    btnGetLink.classList.remove("disabled");
+  }
+}
+
+btnYoutube.onclick = ()=>{
+  btnTelegram.classList.remove("disabled");
+  setProgress(25);
+};
+
+btnTelegram.onclick = ()=>{
+  if(pr < 25) return;
+  btnInsta.classList.remove("disabled");
+  setProgress(50);
+};
+
+btnInsta.onclick = ()=>{
+  if(pr < 50) return;
+  setProgress(75);
+};
+
+btnGetLink.onclick = ()=>{
+  if(pr < 75) return;
+  alert("✔ 75% Complete!\n\nGet Link Ready.");
+};
+
+// Background effect
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
+let W = canvas.width = innerWidth;
+let H = canvas.height = innerHeight;
+
+window.onresize = ()=>{W = canvas.width = innerWidth; H = canvas.height = innerHeight;};
+
+function rand(a,b){ return Math.random()*(b-a)+a; }
+const P=[]; for(let i=0;i<60;i++) P.push({x:rand(0,W),y:rand(0,H),r:rand(8,25),vx:rand(-.3,.3),vy:rand(-.3,.3),h:rand(0,360)});
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  P.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0) p.x=W; if(p.x>W) p.x=0;
+    if(p.y<0) p.y=H; if(p.y>H) p.y=0;
+    ctx.beginPath();
+    ctx.fillStyle=`hsla(${p.h},90%,60%,0.15)`;
+    ctx.arc(p.x,p.y,p.r,0,7);
+    ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
